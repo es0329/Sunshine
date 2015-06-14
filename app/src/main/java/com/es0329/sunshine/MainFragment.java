@@ -2,6 +2,7 @@ package com.es0329.sunshine;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,12 +22,54 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class MainFragment extends Fragment implements WeatherListener {
-    private final String POSTAL_CODE = "34786";
-
     private ArrayList<String> weekForecast = new ArrayList<>();
     private ArrayAdapter<String> adapter;
 
     public MainFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        FrameLayout layout = (FrameLayout) inflater.inflate(R.layout.fragment_main, container, false);
+        adapter = new ArrayAdapter<>(getActivity(),
+                R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+
+        ListView listView = (ListView) layout.findViewById(R.id.listview_forecast);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                launchDetailActivity(adapter.getItem(position));
+            }
+        });
+
+        return layout;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
+    @Override
+    public void onWeatherReceived(String[] forecasts) {
+        Log.i(getClass().getSimpleName(), "WeatherListener#onWeatherReceived");
+        weekForecast.clear();
+        Collections.addAll(weekForecast, forecasts);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void launchDetailActivity(String weatherDescription) {
+        Intent detailIntent = new Intent(getActivity().getApplicationContext(), DetailActivity.class);
+        detailIntent.putExtra(DetailFragment.KEY_WEATHER_DESCRIPTION, weatherDescription);
+        startActivity(detailIntent);
     }
 
     @Override
@@ -40,73 +83,33 @@ public class MainFragment extends Fragment implements WeatherListener {
 
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                new FetchWeatherTask(this).execute(POSTAL_CODE);
-                Log.i(getClass().getSimpleName(), "FetchWeatherTask#execute");
+                updateWeather();
                 return true;
             case R.id.action_settings:
-                launchSettings();
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+    private void updateWeather() {
+        new FetchWeatherTask(this).execute(getLocationPreference(), getUnitPreference());
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        new FetchWeatherTask(this).execute(POSTAL_CODE);
+    private String getLocationPreference() {
+        String location_key = getString(R.string.pref_location_key);
+        String location_default = getString(R.string.pref_location_default);
 
-//        weekForecast = createForecastEntries();
-        adapter = new ArrayAdapter<>(getActivity(),
-                R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
-
-        FrameLayout frameLayout
-                = (FrameLayout) inflater.inflate(R.layout.fragment_main, container, false);
-        ListView listView = (ListView) frameLayout.findViewById(R.id.listview_forecast);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                launchDetail(adapter.getItem(position));
-            }
-        });
-
-        return frameLayout;
+        return PreferenceManager
+                .getDefaultSharedPreferences(getActivity()).getString(location_key, location_default);
     }
 
-    private void launchDetail(String weatherDescription) {
-        Intent detailIntent = new Intent(getActivity().getApplicationContext(), DetailActivity.class);
-        detailIntent.putExtra(DetailFragment.KEY_WEATHER_DESCRIPTION, weatherDescription);
-        startActivity(detailIntent);
-    }
+    private String getUnitPreference() {
+        String units_key = getString(R.string.pref_units_key);
+        String units_default = getString(R.string.pref_units_default);
 
-    private void launchSettings() {
-        Intent settingsIntent = new Intent(getActivity().getApplicationContext(), SettingsActivity.class);
-        startActivity(settingsIntent);
-    }
-
-//    private ArrayList<String> createForecastEntries() {
-//        String[] forecastData = {
-//                "Today - Sunny - 88 / 63",
-//                "Tomorrow - Foggy - 70 / 46",
-//                "Friday - Cloudy - 72 / 63",
-//                "Saturday - Asteroids - 64 / 51",
-//                "Sunday - Rainy - 70 / 46",
-//                "Monday - Snowy - 76 / 68"
-//        };
-//        return new ArrayList<>(Arrays.asList(forecastData));
-//    }
-
-    @Override
-    public void onComplete(String[] forecasts) {
-        weekForecast.clear();
-        Collections.addAll(weekForecast, forecasts);
-        adapter.notifyDataSetChanged();
+        return PreferenceManager
+                .getDefaultSharedPreferences(getActivity()).getString(units_key, units_default);
     }
 }

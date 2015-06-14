@@ -18,7 +18,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     private WeatherListener listener;
 
     public interface WeatherListener {
-        void onComplete(String[] forecasts);
+        void onWeatherReceived(String[] forecasts);
     }
 
     public FetchWeatherTask(WeatherListener listener) {
@@ -26,13 +26,15 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     }
 
     @Override
-    protected String[] doInBackground(String... postalCodes) {
+    protected String[] doInBackground(String... userPrefs) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String forecastJson;
 
+        Log.i(getClass().getSimpleName(), "postal code = " + userPrefs[0]);
+
         try {
-            URL url = new URL(getUrl(postalCodes[0]));
+            URL url = new URL(getUrl(userPrefs[0]));
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
@@ -55,7 +57,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
                 return null;
             }
             forecastJson = stringBuilder.toString();
-            WeatherParser weatherParser = new WeatherParser();
+            WeatherParser weatherParser = new WeatherParser(userPrefs[1]);
             return weatherParser.getWeatherDataFromJson(forecastJson, 7);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
@@ -82,7 +84,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     @Override
     protected void onPostExecute(String[] forecasts) {
         super.onPostExecute(forecasts);
-        listener.onComplete(forecasts);
+        listener.onWeatherReceived(forecasts);
     }
 
     private String getUrl(String postalCode) {

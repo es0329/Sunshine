@@ -39,16 +39,11 @@ public class DetailFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.action_settings:
-                launchSettings();
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void launchSettings() {
-        Intent settingsIntent = new Intent(getActivity().getApplicationContext(), SettingsActivity.class);
-        startActivity(settingsIntent);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.es0329.sunshine;
 
 import android.text.format.Time;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,6 +12,11 @@ import java.util.Locale;
 
 public class WeatherParser {
     private final String LOG_TAG = getClass().getSimpleName();
+    private String units;
+
+    public WeatherParser(String units) {
+        this.units = units;
+    }
 
     public static double getMaxTemperatureForDay(String rawJson, int dayIndex) {
 
@@ -36,11 +42,11 @@ public class WeatherParser {
         return shortenedDateFormat.format(time);
     }
 
-    protected String formatHighLows(double high, double low) {
-        long roundedHigh = Math.round(high);
-        long roundedLow = Math.round(low);
-        return roundedHigh + "/" + roundedLow;
-    }
+//    protected String formatHighLows(double high, double low) {
+//        long roundedHigh = Math.round(high);
+//        long roundedLow = Math.round(low);
+//        return roundedHigh + "/" + roundedLow;
+//    }
 
     protected String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
             throws JSONException {
@@ -98,10 +104,28 @@ public class WeatherParser {
             double high = temperatureObject.getDouble(OWM_MAX);
             double low = temperatureObject.getDouble(OWM_MIN);
 
-            highAndLow = formatHighLows(high, low);
+            highAndLow = formatHighLows(high, low, units);
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
         return resultStrs;
+    }
+
+    private String formatHighLows(double high, double low, String unitType) {
+        final String IMPERIAL = "imperial";
+        final String METRIC = "metric";
+
+        if (unitType.equals(IMPERIAL)) {
+            high = (high * 1.8) + 32;
+            low = (low * 1.8) + 32;
+        } else if (!unitType.equals(METRIC)) {
+            Log.d(LOG_TAG, "Unit type not found: " + unitType);
+        }
+
+        // For presentation, assume the user doesn't care about tenths of a degree.
+        long roundedHigh = Math.round(high);
+        long roundedLow = Math.round(low);
+
+        return roundedHigh + "/" + roundedLow;
     }
 }

@@ -1,9 +1,40 @@
 <resources>
     <string name="app_name">Sunshine</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_refresh" translatable="false">Refresh</string>
-    <string name="lorem_ipsum">Lorem Ipsum</string>
+    <string name="lorem_ipsum" translatable="false">Lorem Ipsum</string>
+
+    <!-- Main -->
+    <string name="action_refresh">Refresh</string>
+
+    <!-- Detail -->
     <string name="title_activity_detail">DetailActivity</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+
+    <!-- Settings -->
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">@string/action_settings</string>
+
+    <!-- Preferences -->
+    <string name="pref_location_title">Location</string>
+    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_location_default" translatable="false">34786</string>
+
+    <string name="pref_units_title">Temperature Units</string>
+    <string name="pref_units_option0_entry">Metric</string>
+    <string name="pref_units_option1_entry">Imperial</string>
+
+    <string-array name="units_entries">
+        <item>@string/pref_units_option0_entry</item>
+        <item>@string/pref_units_option1_entry</item>
+    </string-array>
+
+    <string name="pref_units_key" translatable="false">units</string>
+    <string name="pref_units_option0_value" translatable="false">metric</string>
+    <string name="pref_units_option1_value" translatable="false">imperial</string>
+
+    <string-array name="units_values">
+        <item>@string/pref_units_option0_value</item>
+        <item>@string/pref_units_option1_value</item>
+    </string-array>
+
+    <string name="pref_units_default" translatable="false">@string/pref_units_option0_value</string>
+
 </resources>
