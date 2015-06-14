@@ -81,7 +81,6 @@ public class WeatherParser {
             String description;
             String highAndLow;
 
-            // Get the JSON object representing the day
             JSONObject dayForecast = weatherArray.getJSONObject(i);
 
             // The date/time is returned as a long.  We need to convert that
@@ -92,12 +91,9 @@ public class WeatherParser {
             dateTime = dayTime.setJulianDay(julianStartDay + i);
             day = getReadableDateString(dateTime);
 
-            // description is in a child array called "weather", which is 1 element long.
             JSONObject weatherObject = dayForecast.getJSONArray(OWM_WEATHER).getJSONObject(0);
             description = weatherObject.getString(OWM_DESCRIPTION);
 
-            // Temperatures are in a child object called "temp".  Try not to name variables
-            // "temp" when working with temperature.  It confuses everybody.
             JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
             double high = temperatureObject.getDouble(OWM_MAX);
             double low = temperatureObject.getDouble(OWM_MIN);
@@ -105,10 +101,6 @@ public class WeatherParser {
             highAndLow = formatHighLows(high, low);
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
-
-//        for (String s : resultStrs) {
-//            Log.v(LOG_TAG, "Forecast entry: " + s);
-//        }
 
         return resultStrs;
     }
