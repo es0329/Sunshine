@@ -42,12 +42,6 @@ public class WeatherParser {
         return shortenedDateFormat.format(time);
     }
 
-//    protected String formatHighLows(double high, double low) {
-//        long roundedHigh = Math.round(high);
-//        long roundedLow = Math.round(low);
-//        return roundedHigh + "/" + roundedLow;
-//    }
-
     protected String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
             throws JSONException {
 

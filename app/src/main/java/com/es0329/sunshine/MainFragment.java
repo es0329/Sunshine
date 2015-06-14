@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.es0329.sunshine.FetchWeatherTask.WeatherListener;
 
@@ -60,10 +60,14 @@ public class MainFragment extends Fragment implements WeatherListener {
 
     @Override
     public void onWeatherReceived(String[] forecasts) {
-        Log.i(getClass().getSimpleName(), "WeatherListener#onWeatherReceived");
         weekForecast.clear();
-        Collections.addAll(weekForecast, forecasts);
-        adapter.notifyDataSetChanged();
+
+        if (forecasts == null) {
+            Toast.makeText(getActivity(), getString(R.string.weatherUnavailable), Toast.LENGTH_SHORT).show();
+        } else {
+            Collections.addAll(weekForecast, forecasts);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void launchDetailActivity(String weatherDescription) {
@@ -74,7 +78,7 @@ public class MainFragment extends Fragment implements WeatherListener {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.settings, menu);
+        inflater.inflate(R.menu.main, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
