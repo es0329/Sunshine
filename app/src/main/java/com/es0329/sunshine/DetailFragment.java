@@ -2,6 +2,7 @@ package com.es0329.sunshine;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -43,9 +44,18 @@ public class DetailFragment extends Fragment {
     }
 
     private Intent getDefaultShareIntent() {
+        final String SHARE_HASHTAG = " #SunshineApp";
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, textView.getText().toString() + " #SunshineApp");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        } else {
+            //noinspection deprecation
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        }
+
+        intent.putExtra(Intent.EXTRA_TEXT, textView.getText().toString() + SHARE_HASHTAG);
         return intent;
     }
 

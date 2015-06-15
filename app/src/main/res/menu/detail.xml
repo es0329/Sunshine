@@ -6,7 +6,8 @@
         android:id="@+id/menu_item_share"
         android:title="@string/menu_item_share_title"
         app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
     <item
         android:id="@+id/action_map"
         android:orderInCategory="99"
