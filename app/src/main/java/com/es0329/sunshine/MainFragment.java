@@ -98,7 +98,7 @@ public class MainFragment extends Fragment implements WeatherListener {
     }
 
     private void updateWeather() {
-        new FetchWeatherTask(this).execute(getLocationPreference(), getUnitPreference());
+        new FetchWeatherTask(getActivity().getApplicationContext(), adapter).execute(getLocationPreference(), getUnitPreference());
     }
 
     private String getLocationPreference() {
