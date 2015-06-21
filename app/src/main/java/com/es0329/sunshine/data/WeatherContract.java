@@ -127,7 +127,6 @@ public class WeatherContract {
                 return 0;
         }
 
-
         public static final String TABLE_NAME = "weather";
 
         // Column with the foreign key into the location table.
