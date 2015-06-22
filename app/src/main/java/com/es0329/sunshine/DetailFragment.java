@@ -22,16 +22,26 @@ public class DetailFragment extends Fragment {
     static final String KEY_WEATHER_DESCRIPTION = "weatherDescription";
     private TextView textView;
 
-    public static DetailFragment newInstance(String intentExtra) {
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_WEATHER_DESCRIPTION, intentExtra);
+    public static DetailFragment newInstance() {
+//        Bundle bundle = new Bundle();
+//        bundle.putString(KEY_WEATHER_DESCRIPTION, intentExtra);
 
-        DetailFragment detailFragment = new DetailFragment();
-        detailFragment.setArguments(bundle);
-        return detailFragment;
+//        DetailFragment detailFragment = new DetailFragment();
+//        detailFragment.setArguments(bundle);
+        return new DetailFragment();
     }
 
+//    public static DetailFragment newInstance(String intentExtra) {
+//        Bundle bundle = new Bundle();
+//        bundle.putString(KEY_WEATHER_DESCRIPTION, intentExtra);
+//
+//        DetailFragment detailFragment = new DetailFragment();
+//        detailFragment.setArguments(bundle);
+//        return detailFragment;
+//    }
+
     public DetailFragment() {
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -86,16 +96,15 @@ public class DetailFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_detail, container, false);
         textView = (TextView) layout.findViewById(weatherDescription);
-        textView.setText(getArguments().getString(KEY_WEATHER_DESCRIPTION));
+
+        Intent intent = getActivity().getIntent();
+
+        if (intent != null) {
+            ((TextView) layout.findViewById(R.id.weatherDescription)).setText(intent.getDataString());
+        }
         return layout;
     }
 
