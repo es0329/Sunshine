@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
@@ -21,7 +21,7 @@ import android.widget.ListView;
 
 import com.es0329.sunshine.data.WeatherContract;
 
-public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor> {
     private static final int FORECAST_LOADER = 0;
     private ForecastAdapter adapter;
 
@@ -74,11 +74,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         updateWeather();
     }
 
-    private void launchDetailActivity(String weatherDescription) {
-        Intent detailIntent = new Intent(getActivity().getApplicationContext(), DetailActivity.class);
-        detailIntent.putExtra(DetailFragment.KEY_WEATHER_DESCRIPTION, weatherDescription);
-        startActivity(detailIntent);
-    }
+//    private void launchDetailActivity(String weatherDescription) {
+//        Intent detailIntent = new Intent(getActivity().getApplicationContext(), DetailActivity.class);
+//        detailIntent.putExtra(DetailFragment.KEY_WEATHER_DESCRIPTION, weatherDescription);
+//        startActivity(detailIntent);
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

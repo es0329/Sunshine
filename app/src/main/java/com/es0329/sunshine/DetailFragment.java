@@ -1,11 +1,15 @@
 package com.es0329.sunshine;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
@@ -16,29 +20,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import static com.es0329.sunshine.R.id.weatherDescription;
+import com.es0329.sunshine.data.WeatherContract.WeatherEntry;
 
-public class DetailFragment extends Fragment {
-    static final String KEY_WEATHER_DESCRIPTION = "weatherDescription";
+public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> {
+    private static final int DETAIL_LOADER = 0;
+
+    private static final String[] FORECAST_COLUMNS = {
+            WeatherEntry.TABLE_NAME + "." + WeatherEntry._ID,
+            WeatherEntry.COLUMN_DATE,
+            WeatherEntry.COLUMN_SHORT_DESC,
+            WeatherEntry.COLUMN_MAX_TEMP,
+            WeatherEntry.COLUMN_MIN_TEMP,
+    };
+
+    private static final int COL_WEATHER_ID = 0;
+    private static final int COL_WEATHER_DATE = 1;
+    private static final int COL_WEATHER_DESC = 2;
+    private static final int COL_WEATHER_MAX_TEMP = 3;
+    private static final int COL_WEATHER_MIN_TEMP = 4;
+
+    private ShareActionProvider shareActionProvider;
     private TextView textView;
 
     public static DetailFragment newInstance() {
-//        Bundle bundle = new Bundle();
-//        bundle.putString(KEY_WEATHER_DESCRIPTION, intentExtra);
-
-//        DetailFragment detailFragment = new DetailFragment();
-//        detailFragment.setArguments(bundle);
         return new DetailFragment();
     }
-
-//    public static DetailFragment newInstance(String intentExtra) {
-//        Bundle bundle = new Bundle();
-//        bundle.putString(KEY_WEATHER_DESCRIPTION, intentExtra);
-//
-//        DetailFragment detailFragment = new DetailFragment();
-//        detailFragment.setArguments(bundle);
-//        return detailFragment;
-//    }
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -48,25 +54,28 @@ public class DetailFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.detail, menu);
         MenuItem shareItem = menu.findItem(R.id.menu_item_share);
-        ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
-        shareActionProvider.setShareIntent(getDefaultShareIntent());
+        shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+        shareActionProvider.setShareIntent(createShareIntent());
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private Intent getDefaultShareIntent() {
-        final String SHARE_HASHTAG = " #SunshineApp";
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View layout = inflater.inflate(R.layout.fragment_detail, container, false);
+        textView = (TextView) layout.findViewById(R.id.weatherDescription);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-        } else {
-            //noinspection deprecation
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        Intent intent = getActivity().getIntent();
+
+        if (intent != null) {
+            textView.setText(intent.getDataString());
         }
+        return layout;
+    }
 
-        intent.putExtra(Intent.EXTRA_TEXT, textView.getText().toString() + SHARE_HASHTAG);
-        return intent;
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -95,24 +104,60 @@ public class DetailFragment extends Fragment {
         startActivity(mapIntent);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_detail, container, false);
-        textView = (TextView) layout.findViewById(weatherDescription);
-
-        Intent intent = getActivity().getIntent();
-
-        if (intent != null) {
-            ((TextView) layout.findViewById(R.id.weatherDescription)).setText(intent.getDataString());
-        }
-        return layout;
-    }
-
     private String getLocationPreference() {
         String location_key = getString(R.string.pref_location_key);
         String location_default = getString(R.string.pref_location_default);
 
         return PreferenceManager
                 .getDefaultSharedPreferences(getActivity()).getString(location_key, location_default);
+    }
+
+    private Intent createShareIntent() {
+        final String SHARE_HASHTAG = " #SunshineApp";
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        } else {
+            //noinspection deprecation
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        }
+
+        intent.putExtra(Intent.EXTRA_TEXT, textView.getText().toString() + SHARE_HASHTAG);
+        return intent;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Intent intent = getActivity().getIntent();
+
+        if (intent == null) {
+            return null;
+        }
+        return new CursorLoader(getActivity(), intent.getData(), FORECAST_COLUMNS, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        if (!data.moveToFirst()) {
+            return;
+        }
+
+        String dateString = Utility.formatDate(data.getLong(COL_WEATHER_DATE));
+        String weatherDescription = data.getString(COL_WEATHER_DESC);
+        boolean isMetric = Utility.isMetric(getActivity());
+        String high = Utility.formatTemperature(data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
+        String low = Utility.formatTemperature(data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
+        textView.setText(String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low));
+
+        if (shareActionProvider != null) {
+            shareActionProvider.setShareIntent(createShareIntent());
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 }
