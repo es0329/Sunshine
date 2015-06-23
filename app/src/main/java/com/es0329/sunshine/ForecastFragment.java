@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
@@ -22,8 +21,13 @@ import android.widget.ListView;
 import com.es0329.sunshine.data.WeatherContract;
 
 public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor> {
+    public static final String TAG_FRAGMENT_FORECAST = "fragment_forecast";
     private static final int FORECAST_LOADER = 0;
     private ForecastAdapter adapter;
+
+    public static ForecastFragment newInstance() {
+        return new ForecastFragment();
+    }
 
     public ForecastFragment() {
     }
@@ -45,8 +49,6 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
 
             @Override
             public void onItemClick(AdapterView adapterView, View view, int position, long l) {
-                // CursorAdapter returns a cursor at the correct position for getItem(), or null
-                // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
 
                 if (cursor != null) {
@@ -67,18 +69,6 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
         getLoaderManager().initLoader(FORECAST_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateWeather();
-    }
-
-//    private void launchDetailActivity(String weatherDescription) {
-//        Intent detailIntent = new Intent(getActivity().getApplicationContext(), DetailActivity.class);
-//        detailIntent.putExtra(DetailFragment.KEY_WEATHER_DESCRIPTION, weatherDescription);
-//        startActivity(detailIntent);
-//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -102,32 +92,31 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     }
 
     private void updateWeather() {
-        new FetchWeatherTask(getActivity()).execute(getLocationPreference(), getUnitPreference());
+        new FetchWeatherTask(getActivity())
+                .execute(Utility.getPreferredLocation(getActivity()), getUnitPreference());
     }
 
-    private String getLocationPreference() {
-        String location_key = getString(R.string.pref_location_key);
-        String location_default = getString(R.string.pref_location_default);
-
-        return PreferenceManager
-                .getDefaultSharedPreferences(getActivity()).getString(location_key, location_default);
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        updateWeather();
+//    }
 
     private String getUnitPreference() {
-        String units_key = getString(R.string.pref_units_key);
-        String units_default = getString(R.string.pref_units_default);
 
-        return PreferenceManager
-                .getDefaultSharedPreferences(getActivity()).getString(units_key, units_default);
+        if (Utility.isMetric(getActivity())) {
+            return getString(R.string.pref_units_option0_value);
+        } else {
+            return getString(R.string.pref_units_option1_value);
+        }
+    }
+
+    public void onLocationChanged() {
+        updateWeather();
+        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
     }
 
     private static final String[] FORECAST_COLUMNS = {
-            // In this case the id needs to be fully qualified with a table name, since
-            // the content provider joins the location & weather tables in the background
-            // (both have an _id column)
-            // On the one hand, that's annoying.  On the other, you can search the weather table
-            // using the location set by the user, which is only in the Location table.
-            // So the convenience is worth it.
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
             WeatherContract.WeatherEntry.COLUMN_DATE,
             WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
@@ -139,8 +128,6 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
             WeatherContract.LocationEntry.COLUMN_COORD_LONG
     };
 
-    /* This is ported from FetchWeatherTask --- but now we go straight from the cursor to the string.
-       These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these must change. */
     static final int COL_WEATHER_ID = 0;
     static final int COL_WEATHER_DATE = 1;
     static final int COL_WEATHER_DESC = 2;

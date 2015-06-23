@@ -31,9 +31,7 @@ public class Utility {
 
     public static boolean isMetric(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString(context.getString(R.string.pref_units_key),
-                context.getString(R.string.pref_units_option0_value))
-                .equals(context.getString(R.string.pref_units_option0_value));
+        return prefs.getString(context.getString(R.string.pref_units_key), context.getString(R.string.pref_units_option0_value)).equals(context.getString(R.string.pref_units_option0_value));
     }
 
     static String formatTemperature(double temperature, boolean isMetric) {

@@ -12,6 +12,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -140,6 +141,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.i(getClass().getSimpleName(), "In onLoadFinished");
 
         if (!data.moveToFirst()) {
             return;
@@ -150,7 +152,13 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         boolean isMetric = Utility.isMetric(getActivity());
         String high = Utility.formatTemperature(data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
         String low = Utility.formatTemperature(data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
-        textView.setText(String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low));
+//        textView.setText(String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low));
+
+
+
+        String mForecast = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);
+        TextView detailTextView = (TextView)getView().findViewById(R.id.weatherDescription);
+        detailTextView.setText(mForecast);
 
         if (shareActionProvider != null) {
             shareActionProvider.setShareIntent(createShareIntent());

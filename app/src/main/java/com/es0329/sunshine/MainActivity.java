@@ -5,45 +5,35 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
+    private String mLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        log("onCreate");
-    }
+        mLocation = Utility.getPreferredLocation(this);
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        log("onStop");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        log("onDestroy");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        log("onPause");
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, ForecastFragment.newInstance(),
+                            ForecastFragment.TAG_FRAGMENT_FORECAST).commit();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        log("onResume");
-    }
+        String location = Utility.getPreferredLocation(this);
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        log("onStart");
-    }
+        if (location != null && !location.equals(mLocation)) {
+            ForecastFragment forecastFragment = (ForecastFragment) getSupportFragmentManager()
+                    .findFragmentByTag(ForecastFragment.TAG_FRAGMENT_FORECAST);
 
-    private void log(String message) {
-        Log.i(getClass().getSimpleName(), message);
+            if (forecastFragment != null) {
+                Log.i(getClass().getSimpleName(), "forecastFragment != null");
+                forecastFragment.onLocationChanged();
+            }
+            mLocation = location;
+        }
     }
 }

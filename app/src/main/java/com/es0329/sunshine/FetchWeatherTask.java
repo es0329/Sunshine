@@ -19,7 +19,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.format.Time;
@@ -290,43 +289,21 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
 
                 cVVector.add(weatherValues);
             }
+            int rowsInserted = 0;
 
             // add to database
             if ( cVVector.size() > 0 ) {
                 // Student: call bulkInsert to add the weatherEntries to the database here
                 ContentValues[] contentValues = new ContentValues[cVVector.size()];
                 cVVector.toArray(contentValues);
-                mContext.getContentResolver().bulkInsert(WeatherEntry.CONTENT_URI, contentValues);
+                rowsInserted =
+                        mContext.getContentResolver().bulkInsert(WeatherEntry.CONTENT_URI, contentValues);
             }
-
-            // Sort order:  Ascending, by date.
-            String sortOrder = WeatherEntry.COLUMN_DATE + " ASC";
-            Uri weatherForLocationUri = WeatherEntry.buildWeatherLocationWithStartDate(
-                    locationSetting, System.currentTimeMillis());
-
-            // Students: Uncomment the next lines to display what what you stored in the bulkInsert
-            Cursor cur = mContext.getContentResolver().query(weatherForLocationUri,
-                    null, null, null, sortOrder);
-
-            cVVector = new Vector<ContentValues>(cur.getCount());
-            if ( cur.moveToFirst() ) {
-                do {
-                    ContentValues cv = new ContentValues();
-                    DatabaseUtils.cursorRowToContentValues(cur, cv);
-                    cVVector.add(cv);
-                } while (cur.moveToNext());
-            }
-
-            Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
-
-//            String[] resultStrs = convertContentValuesToUXFormat(cVVector);
-//            return resultStrs;
-
+            Log.d(LOG_TAG, "FetchWeatherTask Completed inserting "+ rowsInserted +" rows.");
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         }
-//        return null;
     }
 
     @Override
@@ -397,11 +374,14 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
                 return null;
             }
             forecastJsonStr = buffer.toString();
+            getWeatherDataFromJson(forecastJsonStr, locationQuery);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attemping
             // to parse it.
             return null;
+        } catch (JSONException e) {
+            Log.i(LOG_TAG, "JSON Parsing Issue.");
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -414,25 +394,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
                 }
             }
         }
-
-//        try {
-//            return getWeatherDataFromJson(forecastJsonStr, locationQuery);
-//        } catch (JSONException e) {
-//            Log.e(LOG_TAG, e.getMessage(), e);
-//            e.printStackTrace();
-//        }
-        // This will only happen if there was an error getting or parsing the forecast.
         return null;
     }
-
-//    @Override
-//    protected void onPostExecute(Void aVoid) {
-//        if (result != null && mForecastAdapter != null) {
-//            mForecastAdapter.clear();
-//            for(String dayForecastStr : result) {
-//                mForecastAdapter.add(dayForecastStr);
-//            }
-//            // New data is back from the server.  Hooray!
-//        }
-//    }
 }
