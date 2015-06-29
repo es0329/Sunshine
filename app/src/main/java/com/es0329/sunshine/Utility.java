@@ -36,15 +36,25 @@ public class Utility {
         return prefs.getString(context.getString(R.string.pref_units_key), context.getString(R.string.pref_units_option0_value)).equals(context.getString(R.string.pref_units_option0_value));
     }
 
-    static String formatTemperature(double temperature, boolean isMetric) {
-        double temp;
+//    static String formatTemperature(double temperature, boolean isMetric) {
+//        double temp;
+//
+//        if (!isMetric) {
+//            temp = 9 * temperature / 5 + 32;
+//        } else {
+//            temp = temperature;
+//        }
+//        return String.format("%.0f", temp);
+//    }
 
-        if (!isMetric) {
-            temp = 9 * temperature / 5 + 32;
+    static String formatTemperature(Context context, double temperature, boolean isMetric) {
+        double temp;
+        if ( !isMetric ) {
+            temp = 9*temperature/5+32;
         } else {
             temp = temperature;
         }
-        return String.format("%.0f", temp);
+        return context.getString(R.string.format_temperature, temp);
     }
 
     static String formatDate(long dateInMillis) {
