@@ -1,10 +1,19 @@
-<resources>
+<resources
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" >
     <string name="app_name">Sunshine</string>
     <string name="lorem_ipsum" translatable="false">Lorem Ipsum</string>
 
     <!-- Main -->
     <string name="action_refresh">Refresh</string>
     <string name="weatherUnavailable">Weather Temporarily Unavailable</string>
+    <string name="contentDescription_weatherIcon">Weather condition icon.</string>
+
+    <!-- Date label when displaying today's weather forecast [CHAR LIMIT=20] -->
+    <string name="today">Today</string>
+    <!-- Date label when displaying tomorrow's weather forecast [CHAR LIMIT=20] -->
+    <string name="tomorrow">Tomorrow</string>
+    <!-- Date format for displaying day of week and date (i.e. Mon Jun 1) [CHAR LIMIT=20] -->
+    <string name="format_full_friendly_date"><xliff:g id="day">%1$s</xliff:g>, <xliff:g id="date">%2$s</xliff:g></string>
 
     <!-- Detail -->
     <string name="title_activity_detail">DetailActivity</string>
