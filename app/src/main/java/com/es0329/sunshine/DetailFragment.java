@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.es0329.sunshine.data.WeatherContract;
 import com.es0329.sunshine.data.WeatherContract.WeatherEntry;
 
 import butterknife.Bind;
@@ -30,30 +31,37 @@ import butterknife.ButterKnife;
 public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> {
     private static final int DETAIL_LOADER = 0;
 
-    private static final String[] FORECAST_COLUMNS = {
+    private static final String[] DETAIL_COLUMNS = {
             WeatherEntry.TABLE_NAME + "." + WeatherEntry._ID,
             WeatherEntry.COLUMN_DATE,
             WeatherEntry.COLUMN_SHORT_DESC,
             WeatherEntry.COLUMN_MAX_TEMP,
             WeatherEntry.COLUMN_MIN_TEMP,
             WeatherEntry.COLUMN_HUMIDITY,
+            WeatherEntry.COLUMN_PRESSURE,
             WeatherEntry.COLUMN_WIND_SPEED,
             WeatherEntry.COLUMN_DEGREES,
-            WeatherEntry.COLUMN_PRESSURE,
-            WeatherEntry.COLUMN_WEATHER_ID
+            WeatherEntry.COLUMN_WEATHER_ID,
+            // This works because the WeatherProvider returns location data joined with
+            // weather data, even though they're stored in two different tables.
+            WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING
     };
 
-    private static final int COL_WEATHER_DATE = 1;
-    private static final int COL_WEATHER_DESC = 2;
-    private static final int COL_WEATHER_MAX_TEMP = 3;
-    private static final int COL_WEATHER_MIN_TEMP = 4;
-    private static final int COL_WEATHER_HUMIDITY = 5;
-    private static final int COL_WEATHER_WIND = 6;
-    private static final int COL_WEATHER_DEGREES = 7;
-    private static final int COL_WEATHER_PRESSURE = 8;
-    private static final int COL_WEATHER_ID = 9;
+    // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
+    // must change.
+    public static final int COL_WEATHER_ID = 0;
+    public static final int COL_WEATHER_DATE = 1;
+    public static final int COL_WEATHER_DESC = 2;
+    public static final int COL_WEATHER_MAX_TEMP = 3;
+    public static final int COL_WEATHER_MIN_TEMP = 4;
+    public static final int COL_WEATHER_HUMIDITY = 5;
+    public static final int COL_WEATHER_PRESSURE = 6;
+    public static final int COL_WEATHER_WIND_SPEED = 7;
+    public static final int COL_WEATHER_DEGREES = 8;
+    public static final int COL_WEATHER_CONDITION_ID = 9;
 
     private ShareActionProvider shareActionProvider;
+    private String mForecast;
 
     @Bind(R.id.date) TextView date;
     @Bind(R.id.temperatureHigh) TextView temperatureHigh;
@@ -146,7 +154,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         }
 
-        intent.putExtra(Intent.EXTRA_TEXT, description.getText().toString() + SHARE_HASHTAG);
+        intent.putExtra(Intent.EXTRA_TEXT, mForecast + SHARE_HASHTAG);
         return intent;
     }
 
@@ -157,7 +165,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         if (intent == null) {
             return null;
         }
-        return new CursorLoader(getActivity(), intent.getData(), FORECAST_COLUMNS, null, null, null);
+        return new CursorLoader(getActivity(), intent.getData(), DETAIL_COLUMNS, null, null, null);
     }
 
     @Override
@@ -168,8 +176,9 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
             return;
         }
 
-        int weatherId = data.getInt(COL_WEATHER_ID);
-        icon.setImageResource(R.mipmap.ic_launcher);
+        // Read weather icon ID from cursor
+        int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
+        icon.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
 
         String dateString = Utility.getFriendlyDayString(getActivity(), data.getLong(COL_WEATHER_DATE));
         date.setText(dateString);
@@ -184,15 +193,17 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         double humidityValue = data.getDouble(COL_WEATHER_HUMIDITY);
         humidity.setText(getString(R.string.format_humidity, humidityValue));
 
-        String windValue = Utility.getFormattedWind(getActivity().getApplicationContext(), data.getFloat(COL_WEATHER_WIND), data.getFloat(COL_WEATHER_DEGREES));
+        String windValue = Utility.getFormattedWind(getActivity().getApplicationContext(), data.getFloat(COL_WEATHER_WIND_SPEED), data.getFloat(COL_WEATHER_DEGREES));
         wind.setText(windValue);
 
         double pressureValue = data.getDouble(COL_WEATHER_PRESSURE);
         pressure.setText(getString(R.string.format_pressure, pressureValue));
 
-//        String mForecast = String.format("%s - %s - %s/%s", dateString, description, high, low);
         String descriptionValue = data.getString(COL_WEATHER_DESC);
         description.setText(descriptionValue);
+
+        mForecast = String.format("%s - %s - %s/%s", dateString, description.getText().toString(), high, low);
+        Log.i(getClass().getSimpleName(), mForecast);
 
         if (shareActionProvider != null) {
             shareActionProvider.setShareIntent(createShareIntent());

@@ -5,11 +5,6 @@
     android:padding="@dimen/activity_margin"
     tools:context="com.es0329.sunshine.DetailFragment">
 
-    <!--<TextView-->
-    <!--android:id="@+id/weatherDescription"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content" />-->
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +39,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/activity_margin"
             android:contentDescription="@string/contentDescription_weatherIcon"
-            android:src="@mipmap/ic_launcher" />
+            tools:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/description"
