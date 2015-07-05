@@ -14,21 +14,21 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Today, June 29" />
+            android:text="Today, June 29" />
 
         <TextView
             android:id="@+id/temperatureHigh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/date"
-            tools:text="21" />
+            android:text="21" />
 
         <TextView
             android:id="@+id/temperatureLow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/temperatureHigh"
-            tools:text="8" />
+            android:text="8" />
 
         <ImageView
             android:id="@+id/icon"
@@ -39,7 +39,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/activity_margin"
             android:contentDescription="@string/contentDescription_weatherIcon"
-            tools:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/description"
@@ -50,27 +50,27 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/activity_margin"
             android:minWidth="44dp"
-            tools:text="Clear" />
+            android:text="Clear" />
 
         <TextView
             android:id="@+id/humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/temperatureLow"
-            tools:text="Humidity" />
+            android:text="Humidity" />
 
         <TextView
             android:id="@id/wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/humidity"
-            tools:text="Wind" />
+            android:text="Wind" />
 
         <TextView
             android:id="@+id/pressure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/wind"
-            tools:text="Pressure" />
+            android:text="Pressure" />
     </RelativeLayout>
 </ScrollView>

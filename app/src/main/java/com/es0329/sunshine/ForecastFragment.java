@@ -21,7 +21,7 @@ import android.widget.ListView;
 import com.es0329.sunshine.data.WeatherContract;
 
 public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor> {
-    public static final String TAG_FRAGMENT_FORECAST = "fragment_forecast";
+    public static final String TAG = "ForecastFragment";
     private static final int FORECAST_LOADER = 0;
     private ForecastAdapter adapter;
 

@@ -29,6 +29,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> {
+    public static final String TAG = "DetailFragment";
     private static final int DETAIL_LOADER = 0;
 
     private static final String[] DETAIL_COLUMNS = {
@@ -162,7 +163,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Intent intent = getActivity().getIntent();
 
-        if (intent == null) {
+        if (intent == null || intent.getData() == null) {
             return null;
         }
         return new CursorLoader(getActivity(), intent.getData(), DETAIL_COLUMNS, null, null, null);

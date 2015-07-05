@@ -5,18 +5,25 @@ import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     private String mLocation;
+    private boolean isTwoPane;
     private boolean mIsMetric;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         mLocation = Utility.getPreferredLocation(this);
+        setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, ForecastFragment.newInstance(),
-                            ForecastFragment.TAG_FRAGMENT_FORECAST).commit();
+        if (findViewById(R.id.weather_detail_container) != null) {
+            isTwoPane = true;
+
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.weather_detail_container, DetailFragment.newInstance(),
+                                DetailFragment.TAG).commit();
+            }
+        } else {
+            isTwoPane = false;
         }
     }
 
@@ -28,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (location != null && !location.equals(mLocation) || isMetric != mIsMetric) {
             ForecastFragment forecastFragment = (ForecastFragment) getSupportFragmentManager()
-                    .findFragmentByTag(ForecastFragment.TAG_FRAGMENT_FORECAST);
+                    .findFragmentById(R.id.fragment_forecast);
 
             if (forecastFragment != null) {
                 forecastFragment.onLocationChanged();
