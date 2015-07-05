@@ -25,6 +25,18 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     private static final int FORECAST_LOADER = 0;
     private ForecastAdapter adapter;
 
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        void onItemSelected(Uri dateUri);
+    }
+
     public static ForecastFragment newInstance() {
         return new ForecastFragment();
     }
@@ -53,11 +65,11 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
 
                 if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
-                    Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-                                    locationSetting, cursor.getLong(COL_WEATHER_DATE)
-                            ));
-                    startActivity(intent);
+
+                    ((Callback) getActivity())
+                            .onItemSelected(WeatherContract.WeatherEntry
+                                    .buildWeatherLocationWithDate(locationSetting,
+                                            cursor.getLong(COL_WEATHER_DATE)));
                 }
             }
         });
@@ -91,16 +103,15 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
         }
     }
 
+    public void onLocationChanged() {
+        updateWeather();
+        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+    }
+
     private void updateWeather() {
         new FetchWeatherTask(getActivity())
                 .execute(Utility.getPreferredLocation(getActivity()), getUnitPreference());
     }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        updateWeather();
-//    }
 
     private String getUnitPreference() {
 
@@ -109,11 +120,6 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
         } else {
             return getString(R.string.pref_units_option1_value);
         }
-    }
-
-    public void onLocationChanged() {
-        updateWeather();
-        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
     }
 
     private static final String[] FORECAST_COLUMNS = {

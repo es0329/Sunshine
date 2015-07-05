@@ -30,6 +30,8 @@ import butterknife.ButterKnife;
 
 public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> {
     public static final String TAG = "DetailFragment";
+    public static final String URI = "mUri";
+
     private static final int DETAIL_LOADER = 0;
 
     private static final String[] DETAIL_COLUMNS = {
@@ -63,6 +65,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
 
     private ShareActionProvider shareActionProvider;
     private String mForecast;
+    private Uri mUri;
 
     @Bind(R.id.date) TextView date;
     @Bind(R.id.temperatureHigh) TextView temperatureHigh;
@@ -94,11 +97,10 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, layout);
+        Bundle bundle = getArguments();
 
-        Intent intent = getActivity().getIntent();
-
-        if (intent != null) {
-            description.setText(intent.getDataString());
+        if (bundle != null) {
+            mUri = bundle.getParcelable(DetailFragment.URI);
         }
         return layout;
     }
@@ -107,6 +109,16 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(DETAIL_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
+    }
+
+    public void onLocationChanged(String location) {
+        Uri uri = mUri;
+
+        if (uri != null) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            mUri = WeatherEntry.buildWeatherLocationWithDate(location, date);
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+        }
     }
 
     @Override
@@ -161,12 +173,11 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Intent intent = getActivity().getIntent();
 
-        if (intent == null || intent.getData() == null) {
-            return null;
+        if (mUri != null) {
+            return new CursorLoader(getActivity(), mUri, DETAIL_COLUMNS, null, null, null);
         }
-        return new CursorLoader(getActivity(), intent.getData(), DETAIL_COLUMNS, null, null, null);
+        return null;
     }
 
     @Override
@@ -203,7 +214,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         String descriptionValue = data.getString(COL_WEATHER_DESC);
         description.setText(descriptionValue);
 
-        mForecast = String.format("%s - %s - %s/%s", dateString, description.getText().toString(), high, low);
+        mForecast = String.format("%s - %s - %s/%s", dateString, descriptionValue, high, low);
         Log.i(getClass().getSimpleName(), mForecast);
 
         if (shareActionProvider != null) {
