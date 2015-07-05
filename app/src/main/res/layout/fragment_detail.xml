@@ -5,72 +5,81 @@
     android:padding="@dimen/activity_margin"
     tools:context="com.es0329.sunshine.DetailFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:padding="@dimen/list_item_spacing"
+        android:weightSum="2">
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Today, June 29" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/temperatureHigh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/date"
-            tools:text="21" />
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Tomorrow" />
 
-        <TextView
-            android:id="@+id/temperatureLow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/temperatureHigh"
-            tools:text="8" />
+            <TextView
+                android:id="@+id/temperatureHigh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="21\u00B0" />
 
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/temperatureLow"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/activity_margin"
-            android:contentDescription="@string/contentDescription_weatherIcon"
-            tools:src="@mipmap/ic_launcher" />
+            <TextView
+                android:id="@+id/temperatureLow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="8\u00B0" />
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/wind"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/activity_margin"
-            android:minWidth="44dp"
-            tools:text="Clear" />
+            <TextView
+                android:id="@+id/humidity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Humidity" />
 
-        <TextView
-            android:id="@+id/humidity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/temperatureLow"
-            tools:text="Humidity" />
+            <TextView
+                android:id="@+id/wind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Wind" />
 
-        <TextView
-            android:id="@+id/wind"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/humidity"
-            tools:text="Wind" />
+            <TextView
+                android:id="@+id/pressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Pressure" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/pressure"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/wind"
-            tools:text="Pressure" />
-    </RelativeLayout>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin"
+                android:contentDescription="@string/contentDescription_weatherIcon"
+                tools:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin"
+                android:minWidth="44dp"
+                tools:text="Clear" />
+        </LinearLayout>
+    </LinearLayout>
 </ScrollView>
