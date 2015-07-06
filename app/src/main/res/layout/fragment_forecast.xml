@@ -6,8 +6,10 @@
 
     <ListView
         android:id="@+id/listview_forecast"
+        style="@style/SunshineListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:listSelector="@android:color/transparent"
         tools:listitem="@layout/list_item_forecast" />
 
 </FrameLayout>
