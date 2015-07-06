@@ -23,7 +23,12 @@ import com.es0329.sunshine.data.WeatherContract;
 public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor> {
     public static final String TAG = "ForecastFragment";
     private static final int FORECAST_LOADER = 0;
+
+    private final String KEY_POSITION = "position";
+
     private ForecastAdapter adapter;
+    private ListView listView;
+    private int mPosition = 0;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -53,9 +58,9 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FrameLayout layout = (FrameLayout) inflater.inflate(R.layout.fragment_forecast, container, false);
-        adapter = new ForecastAdapter(getActivity(), null, 0);
 
-        ListView listView = (ListView) layout.findViewById(R.id.listview_forecast);
+        adapter = new ForecastAdapter(getActivity(), null, 0);
+        listView = (ListView) layout.findViewById(R.id.listview_forecast);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -71,8 +76,14 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
                                     .buildWeatherLocationWithDate(locationSetting,
                                             cursor.getLong(COL_WEATHER_DATE)));
                 }
+                mPosition = position;
             }
         });
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_POSITION)) {
+            mPosition = savedInstanceState.getInt(KEY_POSITION);
+        }
+
         return layout;
     }
 
@@ -111,6 +122,15 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     private void updateWeather() {
         new FetchWeatherTask(getActivity())
                 .execute(Utility.getPreferredLocation(getActivity()), getUnitPreference());
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        if (mPosition != ListView.INVALID_POSITION) {
+            outState.putInt(KEY_POSITION, mPosition);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     private String getUnitPreference() {
@@ -156,6 +176,10 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
+
+        if (mPosition != ListView.INVALID_POSITION) {
+            listView.smoothScrollToPosition(mPosition);
+        }
     }
 
     @Override
