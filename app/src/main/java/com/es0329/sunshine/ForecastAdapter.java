@@ -18,15 +18,20 @@ public class ForecastAdapter extends CursorAdapter {
     private final int VIEW_TYPE_FUTURE = 1;
 
     private LayoutInflater mInflater;
+    private boolean doesUseTodayLayout = false;
 
     public ForecastAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
         mInflater = LayoutInflater.from(context);
     }
 
+    public void setDoesUseTodayLayout(boolean isTodaySpecial) {
+        doesUseTodayLayout = isTodaySpecial;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        return (position == 0) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE;
+        return (position == 0 && doesUseTodayLayout) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE;
     }
 
     @Override
@@ -63,7 +68,6 @@ public class ForecastAdapter extends CursorAdapter {
         } else {
             layoutId = R.layout.list_item_forecast;
         }
-//        return LayoutInflater.from(context).inflate(layoutId, parent, false);
 
         /* Inflates the item layout. Stores resource IDs in a
              * in a ViewHolder class to prevent having to look

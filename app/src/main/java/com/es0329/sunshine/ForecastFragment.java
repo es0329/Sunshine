@@ -26,9 +26,11 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
 
     private final String KEY_POSITION = "position";
 
+    private boolean useTodayLayout = false;
+    private int mPosition = 0;
+
     private ForecastAdapter adapter;
     private ListView listView;
-    private int mPosition = 0;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -60,6 +62,8 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
         FrameLayout layout = (FrameLayout) inflater.inflate(R.layout.fragment_forecast, container, false);
 
         adapter = new ForecastAdapter(getActivity(), null, 0);
+        adapter.setDoesUseTodayLayout(useTodayLayout);
+
         listView = (ListView) layout.findViewById(R.id.listview_forecast);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -122,6 +126,14 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     private void updateWeather() {
         new FetchWeatherTask(getActivity())
                 .execute(Utility.getPreferredLocation(getActivity()), getUnitPreference());
+    }
+
+    public void setDoesUseTodayLayout(boolean isTodaySpecial) {
+        useTodayLayout = isTodaySpecial;
+
+        if (adapter != null) {
+            adapter.setDoesUseTodayLayout(useTodayLayout);
+        }
     }
 
     @Override
