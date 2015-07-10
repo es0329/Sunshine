@@ -2,10 +2,10 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:listViewStyle">@style/SunshineListView</item>
+        <item name="android:listViewStyle">@style/ForecastListStyle</item>
     </style>
 
-    <style name="SunshineListView">
+    <style name="ForecastListStyle">
         <item name="android:choiceMode">singleChoice</item>
     </style>
 
