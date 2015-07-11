@@ -1,10 +1,20 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_margin">16dp</dimen>
-    <dimen name="list_item_spacing">4dp</dimen>
+
+    <dimen name="listItem_spacing">4dp</dimen>
+    <dimen name="listItem_drawableFrame_width">60dp</dimen>
+    <dimen name="listItem_currentDay_iconWidth">100dp</dimen>
+    <dimen name="listItem_currentDay_iconHeight">100dp</dimen>
+
     <dimen name="min_touch">38dp</dimen>
     <dimen name="min_pad">6dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
+
+    <!-- Typography -->
+    <dimen name="listItem_currentDay_highTemperature">72sp</dimen>
+    <dimen name="listItem_currentDay_lowTemperature">36sp</dimen>
+
 </resources>

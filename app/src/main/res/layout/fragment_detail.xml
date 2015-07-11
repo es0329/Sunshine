@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/activity_margin"
     tools:context="com.es0329.sunshine.DetailFragment">
 
     <LinearLayout
@@ -10,7 +9,7 @@
         android:layout_height="wrap_content"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:padding="@dimen/list_item_spacing"
+        android:padding="@dimen/listItem_spacing"
         android:weightSum="2">
 
         <LinearLayout
