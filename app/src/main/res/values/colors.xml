@@ -2,11 +2,14 @@
 <resources>
     <color name="grey">#cccccc</color>
     <color name="font_white">#ffffff</color>
+    <color name="font_grey">#646464</color>
     <color name="sunshine_blue">#ff1ca8f4</color>
     <color name="sunshine_light_blue">#ff64c2f4</color>
     <color name="sunshine_dark_blue">#0288D1</color>
 
+    <color name="secondaryText">@color/font_grey</color>
     <color name="list_item_pressed">@color/grey</color>
     <color name="list_item_active">@color/sunshine_light_blue</color>
     <color name="listItem_forecastToday_textColor">@color/font_white</color>
+
 </resources>

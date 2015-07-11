@@ -12,7 +12,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -67,6 +66,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     private String mForecast;
     private Uri mUri;
 
+    @Bind(R.id.day) TextView day;
     @Bind(R.id.date) TextView date;
     @Bind(R.id.temperatureHigh) TextView temperatureHigh;
     @Bind(R.id.temperatureLow) TextView temperatureLow;
@@ -182,7 +182,6 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.i(getClass().getSimpleName(), "In onLoadFinished");
 
         if (!data.moveToFirst()) {
             return;
@@ -192,8 +191,13 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
         icon.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
 
-        String dateString = Utility.getFriendlyDayString(getActivity(), data.getLong(COL_WEATHER_DATE));
-        date.setText(dateString);
+        long dateLong = data.getLong(COL_WEATHER_DATE);
+        String dayValue = Utility.getDayName(getActivity(), dateLong);
+        day.setText(dayValue);
+
+//        String dateString = Utility.getFriendlyDayString(getActivity(), date);
+        String dateValue = Utility.getFormattedMonthDay(getActivity(), dateLong);
+        date.setText(dateValue);
 
         boolean isMetric = Utility.isMetric(getActivity());
         String high = Utility.formatTemperature(getActivity().getApplicationContext(), data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
@@ -214,8 +218,7 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         String descriptionValue = data.getString(COL_WEATHER_DESC);
         description.setText(descriptionValue);
 
-        mForecast = String.format("%s - %s - %s/%s", dateString, descriptionValue, high, low);
-        Log.i(getClass().getSimpleName(), mForecast);
+        mForecast = String.format("%s - %s - %s/%s", dateValue, descriptionValue, high, low);
 
         if (shareActionProvider != null) {
             shareActionProvider.setShareIntent(createShareIntent());

@@ -17,4 +17,9 @@
     <dimen name="listItem_currentDay_highTemperature">72sp</dimen>
     <dimen name="listItem_currentDay_lowTemperature">36sp</dimen>
 
+    <dimen name="detailFragment_dayText_size">24sp</dimen>
+    <dimen name="detailFragment_dateText_size">16sp</dimen>
+    <dimen name="detailFragment_highTemperatureText_size">96sp</dimen>
+    <dimen name="detailFragment_lowTemperatureText_size">48sp</dimen>
+
 </resources>
