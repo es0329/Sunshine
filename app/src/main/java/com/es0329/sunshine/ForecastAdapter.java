@@ -16,6 +16,7 @@ import android.widget.TextView;
 public class ForecastAdapter extends CursorAdapter {
     private final int VIEW_TYPE_TODAY = 0;
     private final int VIEW_TYPE_FUTURE = 1;
+    private final int VIEW_TYPE_COUNT = 2;
 
     private LayoutInflater mInflater;
     private boolean doesUseTodayLayout = false;
@@ -36,7 +37,7 @@ public class ForecastAdapter extends CursorAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return VIEW_TYPE_COUNT;
     }
 
     /**
@@ -87,7 +88,7 @@ public class ForecastAdapter extends CursorAdapter {
         // Read weather icon ID from cursor
         int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
 
-        if (cursor.getPosition() == VIEW_TYPE_TODAY) {
+        if (cursor.getPosition() == VIEW_TYPE_TODAY && doesUseTodayLayout) {
             viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
         } else {
             viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherId));

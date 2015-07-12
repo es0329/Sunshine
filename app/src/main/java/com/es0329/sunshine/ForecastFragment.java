@@ -87,7 +87,6 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_POSITION)) {
             mPosition = savedInstanceState.getInt(KEY_POSITION);
         }
-
         return layout;
     }
 
