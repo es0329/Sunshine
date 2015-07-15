@@ -31,8 +31,6 @@ public class SunshineService extends IntentService {
     public static final String KEY_LOCATION_QUERY = "location_query";
     private final String LOG_TAG = SunshineService.class.getSimpleName();
 
-//    private ArrayAdapter<String> adapter;
-
     public SunshineService() {
         super(SunshineService.class.getSimpleName());
     }
@@ -223,18 +221,18 @@ public class SunshineService extends IntentService {
      * Helper method to handle insertion of a new location in the weather database.
      *
      * @param locationSetting The location string used to request updates from the server.
-     * @param cityName A human-readable city name, e.g "Mountain View"
-     * @param lat the latitude of the city
-     * @param lon the longitude of the city
+     * @param cityName        A human-readable city name, e.g "Mountain View"
+     * @param lat             the latitude of the city
+     * @param lon             the longitude of the city
      * @return the row ID of the added location.
      */
     long addLocation(String locationSetting, String cityName, double lat, double lon) {
         long locationId;
         Cursor cursor = this.getContentResolver().query(
                 WeatherContract.LocationEntry.CONTENT_URI,
-                new String[] { WeatherContract.LocationEntry._ID },
+                new String[]{WeatherContract.LocationEntry._ID},
                 WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
-                new String[] { locationSetting },
+                new String[]{locationSetting},
                 null);
 
         if (cursor.moveToFirst()) {

@@ -124,9 +124,6 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     }
 
     private void updateWeather() {
-//        new FetchWeatherTask(getActivity())
-//                .execute(Utility.getPreferredLocation(getActivity()), getUnitPreference());
-
         Intent intent = new Intent(getActivity(), SunshineService.class);
         intent.putExtra(SunshineService.KEY_LOCATION_QUERY, Utility.getPreferredLocation(getActivity()));
         getActivity().startService(intent);
