@@ -3,6 +3,8 @@ package com.es0329.sunshine;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 
 /**
  * Custom view to render wind direction.
@@ -17,6 +19,7 @@ public class CompassView extends View {
      */
     public CompassView(Context context) {
         super(context);
+        initialize(context);
     }
 
     /**
@@ -27,6 +30,7 @@ public class CompassView extends View {
      */
     public CompassView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initialize(context);
     }
 
     /**
@@ -38,6 +42,16 @@ public class CompassView extends View {
      */
     public CompassView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initialize(context);
+    }
+
+    private void initialize(Context context) {
+        AccessibilityManager accessibility
+                = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+
+        if (accessibility.isEnabled()) {
+            sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED);
+        }
     }
 
     @Override
@@ -72,5 +86,11 @@ public class CompassView extends View {
         }
 
         setMeasuredDimension(viewWidth, viewHeight);
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        event.getText().add("Wind speed/direction.");
+        return true;
     }
 }

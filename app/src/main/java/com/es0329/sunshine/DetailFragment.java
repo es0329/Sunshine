@@ -213,10 +213,6 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         String windValue = Utility.getFormattedWind(getActivity().getApplicationContext(), data.getFloat(COL_WEATHER_WIND_SPEED), data.getFloat(COL_WEATHER_DEGREES));
         wind.setText(windValue);
 
-        if (windValue.endsWith("N")) {
-            compass.setBackgroundResource(R.drawable.ic_wind1_n);
-        }
-
         double pressureValue = data.getDouble(COL_WEATHER_PRESSURE);
         pressure.setText(getString(R.string.format_pressure, pressureValue));
 
