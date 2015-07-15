@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.es0329.sunshine.data.WeatherContract;
+import com.es0329.sunshine.service.SunshineService;
 
 public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor> {
     public static final String TAG = "ForecastFragment";
@@ -123,8 +124,12 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     }
 
     private void updateWeather() {
-        new FetchWeatherTask(getActivity())
-                .execute(Utility.getPreferredLocation(getActivity()), getUnitPreference());
+//        new FetchWeatherTask(getActivity())
+//                .execute(Utility.getPreferredLocation(getActivity()), getUnitPreference());
+
+        Intent intent = new Intent(getActivity(), SunshineService.class);
+        intent.putExtra(SunshineService.KEY_LOCATION_QUERY, Utility.getPreferredLocation(getActivity()));
+        getActivity().startService(intent);
     }
 
     public void setDoesUseTodayLayout(boolean isTodaySpecial) {
