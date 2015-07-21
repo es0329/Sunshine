@@ -10,6 +10,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        project.ext.set("archivesBaseName", "Sunshine-" + defaultConfig.versionName);
     }
     buildTypes {
         release {

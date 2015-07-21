@@ -68,4 +68,8 @@
 
     <string name="pref_units_default" translatable="false">@string/pref_units_option0_value</string>
 
+    <!-- Account type (for sync-adapter authenticator) -->
+    <!-- SyncAdapter related -->
+    <string name="content_authority">com.es0329.sunshine</string>
+    <string name="sync_account_type">sunshine.es0329.com</string>
 </resources>
