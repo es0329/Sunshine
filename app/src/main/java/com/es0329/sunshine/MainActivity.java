@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.es0329.sunshine.sync.SunshineSyncAdapter;
+
 public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
     private String mLocation;
     private boolean isTwoPane;
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                 = (ForecastFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.fragment_forecast);
         forecastFragment.setDoesUseTodayLayout(!isTwoPane);
+
+        SunshineSyncAdapter.initializeSyncAdapter(this);
     }
 
     @Override

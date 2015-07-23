@@ -9,6 +9,8 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
+import com.es0329.sunshine.sync.SunshineSyncAdapter;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application detail.
  * <p>
@@ -59,6 +61,8 @@ public class SettingsActivity extends PreferenceActivity
         } else {
             preference.setSummary(stringValue);
         }
+
+        SunshineSyncAdapter.syncImmediately(getApplicationContext());
         return true;
     }
 

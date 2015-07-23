@@ -22,7 +22,6 @@ import com.es0329.sunshine.data.WeatherContract;
 import com.es0329.sunshine.sync.SunshineSyncAdapter;
 
 public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor> {
-    public static final String TAG = "ForecastFragment";
     private static final int FORECAST_LOADER = 0;
 
     private final String KEY_POSITION = "position";
@@ -43,10 +42,6 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
          * DetailFragmentCallback for when an item has been selected.
          */
         void onItemSelected(Uri dateUri);
-    }
-
-    public static ForecastFragment newInstance() {
-        return new ForecastFragment();
     }
 
     public ForecastFragment() {
@@ -124,21 +119,6 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     }
 
     private void updateWeather() {
-//        Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
-//        alarmIntent.putExtra(SunshineService.KEY_LOCATION_QUERY, Utility.getPreferredLocation(getActivity()));
-//
-//        final int REQUEST_CODE = 0;
-//        PendingIntent pendingIntent
-//                = PendingIntent.getBroadcast(getActivity(), REQUEST_CODE, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
-//
-//        final long TRIGGER_AT_MILLIS = 5000;
-//        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + TRIGGER_AT_MILLIS, pendingIntent);
-//
-//        Intent intent = new Intent(getActivity(), SunshineService.class);
-//        intent.putExtra(SunshineService.KEY_LOCATION_QUERY, Utility.getPreferredLocation(getActivity()));
-//        getActivity().startService(intent);
-
         SunshineSyncAdapter.syncImmediately(getActivity());
     }
 
