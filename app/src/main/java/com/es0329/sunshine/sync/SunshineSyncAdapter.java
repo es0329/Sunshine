@@ -410,26 +410,28 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                         Utility.formatTemperature(context, low));
 
                 //build your notification here.
-                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
-                        .setSmallIcon(iconId)
-                        .setContentTitle(title)
-                        .setContentText(contentText);
+                if (Utility.getNotificationPreference(getContext())) {
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
+                            .setSmallIcon(iconId)
+                            .setContentTitle(title)
+                            .setContentText(contentText);
 
-                // explicit intent
-                Intent resultIntent = new Intent(getContext(), MainActivity.class);
+                    // explicit intent
+                    Intent resultIntent = new Intent(getContext(), MainActivity.class);
 
-                // artificial backstack
-                TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getContext());
-                taskStackBuilder.addParentStack(MainActivity.class);
-                taskStackBuilder.addNextIntent(resultIntent);
+                    // artificial backstack
+                    TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getContext());
+                    taskStackBuilder.addParentStack(MainActivity.class);
+                    taskStackBuilder.addNextIntent(resultIntent);
 
-                PendingIntent resultPendingIntent
-                        = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                mBuilder.setContentIntent(resultPendingIntent);
+                    PendingIntent resultPendingIntent
+                            = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(resultPendingIntent);
 
-                NotificationManager mNotificationManager
-                        = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.notify(WEATHER_NOTIFICATION_ID, mBuilder.build());
+                    NotificationManager mNotificationManager
+                            = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager.notify(WEATHER_NOTIFICATION_ID, mBuilder.build());
+                }
 
                 //refreshing last sync
                 SharedPreferences.Editor editor = prefs.edit();

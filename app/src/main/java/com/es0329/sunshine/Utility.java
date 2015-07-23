@@ -31,6 +31,11 @@ public class Utility {
         return prefs.getString(context.getString(R.string.pref_location_key), context.getString(R.string.pref_location_default));
     }
 
+    public static boolean getNotificationPreference(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getBoolean(context.getString(R.string.pref_notifications_key), true);
+    }
+
     public static boolean isMetric(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.pref_units_key), context.getString(R.string.pref_units_option0_value)).equals(context.getString(R.string.pref_units_option0_value));
