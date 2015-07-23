@@ -201,10 +201,10 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
         date.setText(dateValue);
 
         boolean isMetric = Utility.isMetric(getActivity());
-        String high = Utility.formatTemperature(getActivity().getApplicationContext(), data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
+        String high = Utility.formatTemperature(getActivity().getApplicationContext(), data.getDouble(COL_WEATHER_MAX_TEMP));
         temperatureHigh.setText(high);
 
-        String low = Utility.formatTemperature(getActivity().getApplicationContext(), data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
+        String low = Utility.formatTemperature(getActivity().getApplicationContext(), data.getDouble(COL_WEATHER_MIN_TEMP));
         temperatureLow.setText(low);
 
         double humidityValue = data.getDouble(COL_WEATHER_HUMIDITY);
