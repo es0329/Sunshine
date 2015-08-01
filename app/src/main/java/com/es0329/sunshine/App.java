@@ -7,8 +7,16 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.jakewharton.threetenabp.AndroidThreeTen;
+
 public class App extends Application {
     public static boolean isConnected;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        AndroidThreeTen.init(this);
+    }
 
     public class NetworkStatusReceiver extends BroadcastReceiver {
 

@@ -172,9 +172,15 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
             Vector<ContentValues> cVVector = new Vector<>(weatherArray.length());
             Time dayTime = new Time();
+
+//            ZonedDateTime zonedDateTime = ZonedDateTime.now();
+//            Log.i(LOG_TAG, "ZonedDateTime.now() = " + zonedDateTime.toString());
+
             dayTime.setToNow();
+//            Log.i(LOG_TAG, "dayTime.setToNow() = " + dayTime.toString());
 
             int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
+//            Log.i(LOG_TAG, "julianStartDay = " + julianStartDay);
 
             // now we work exclusively in UTC
             dayTime = new Time();
@@ -194,6 +200,13 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 JSONObject dayForecast = weatherArray.getJSONObject(i);
                 dateTime = dayTime.setJulianDay(julianStartDay + i);
+//                Log.i(LOG_TAG, "dayTime.setJulianDay(julianStartDay + " + i + ") = " + dateTime); // 1439006400000
+//                Log.i(LOG_TAG, "zonedDateTime.plusDays( + " + i + ") = " + zonedDateTime.plusDays(i));
+//                Log.i(LOG_TAG, "zonedDateTime.getOffset() = " + zonedDateTime.getOffset().toString()); // -04:00
+//                Log.i(LOG_TAG, "zonedDateTime.plusDays(i).getNano() = " + zonedDateTime.plusDays(i).getNano()); // 580000000
+//                Log.i(LOG_TAG, "zonedDateTime.plusDays(i).toEpochSecond() = " + zonedDateTime.plusDays(i).toEpochSecond()); // 1439063009
+//                Log.i(LOG_TAG, "zonedDateTime.plusDays(i).toInstant().getEpochSecond() = " + zonedDateTime.plusDays(i).toInstant().getEpochSecond());
+//                Log.i(LOG_TAG, "" + zonedDateTime);
 
                 pressure = dayForecast.getDouble(OWM_PRESSURE);
                 humidity = dayForecast.getInt(OWM_HUMIDITY);
@@ -229,6 +242,10 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 cVVector.toArray(contentValues);
                 rowsInserted =
                         getContext().getContentResolver().bulkInsert(WeatherContract.WeatherEntry.CONTENT_URI, contentValues);
+
+                getContext().getContentResolver().delete(WeatherContract.WeatherEntry.CONTENT_URI,
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " <= ?",
+                        new String[] {Long.toString(dayTime.setJulianDay(julianStartDay -1))});
 
                 notifyWeather();
             }
