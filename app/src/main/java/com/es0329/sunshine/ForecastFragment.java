@@ -102,14 +102,36 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_refresh:
-                updateWeather();
+            case R.id.action_map:
+                showMap();
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showMap() {
+        if (null != adapter) {
+            Cursor c = adapter.getCursor();
+
+            if (null != c) {
+                c.moveToPosition(0);
+                String posLat = c.getString(COL_COORD_LAT);
+                String posLong = c.getString(COL_COORD_LONG);
+                String gpsCoords = posLat + "," + posLong;
+
+                String nativeMap = "geo:0,0?q=" + gpsCoords;
+                String webMap = "http://maps.google.com/maps?f=q&q=" + gpsCoords;
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(nativeMap));
+
+                if (mapIntent.resolveActivity(getActivity().getPackageManager()) == null) {
+                    mapIntent.setData(Uri.parse(webMap));
+                }
+                startActivity(mapIntent);
+            }
         }
     }
 

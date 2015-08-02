@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
@@ -126,34 +125,12 @@ public class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> 
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_map:
-                showMap(getLocationPreference());
-                return true;
             case R.id.action_settings:
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void showMap(String zipCode) {
-        String nativeMap = "geo:0,0?q=" + zipCode;
-        String webMap = "http://maps.google.com/maps?f=q&q=" + zipCode;
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(nativeMap));
-
-        if (mapIntent.resolveActivity(getActivity().getPackageManager()) == null) {
-            mapIntent.setData(Uri.parse(webMap));
-        }
-        startActivity(mapIntent);
-    }
-
-    private String getLocationPreference() {
-        String location_key = getString(R.string.pref_location_key);
-        String location_default = getString(R.string.pref_location_default);
-
-        return PreferenceManager
-                .getDefaultSharedPreferences(getActivity()).getString(location_key, location_default);
     }
 
     private Intent createShareIntent() {
